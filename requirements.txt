@@ -1,0 +1,2 @@
+numpy>=1.11.3 # BSD 3-clause license
+https://github.com/BioroboticsLab/bb_stitcher.git#egg=bb_stitcher
