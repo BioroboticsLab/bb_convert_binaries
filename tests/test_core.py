@@ -10,7 +10,7 @@ import bb_convert_binaries.core as core
 
 @pytest.fixture
 def surveyor(main_indir):
-    surv = st_core.Surveyor(main_indir)
+    surv = st_core.Surveyor()
     surv.load(os.path.join(main_indir, 'minimal_frame_container/surveyor_param.csv'))
     return surv
 
@@ -50,3 +50,8 @@ def test_create_hive_mapping_data(bbb_converter, surveyor):
 
     assert hmdata_left.mapsToCamId == 1
     assert hmdata_right.mapsToCamId == 0
+
+
+def test_create_hive_mapped_detection(bbb_converter, surveyor):
+    hmdet = bbb_converter.create_hive_mapped_detection(surveyor, 10, 10, 1, 10, 0)
+    print(hmdet)

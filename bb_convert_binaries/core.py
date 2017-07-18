@@ -1,4 +1,5 @@
 import capnp
+import numpy as np
 
 import bb_convert_binaries.helpers as helpers
 
@@ -55,3 +56,14 @@ class BBB_Converter(object):
             hmdata.mapsToCamId = params.cam_id_left
 
         return hmdata
+
+    def create_hive_mapped_detection(self, surveyor, xpos, ypos, zRotation, radius, cam_id):
+        hmdet = self.new_sh.HiveMappedDetection.new_message()
+        points, angles = surveyor.map_points_angles(
+            np.float64([[xpos, ypos]]), np.array([zRotation]), cam_id
+        )
+        hmdet.xpos = float(points[0][0])
+        hmdet.ypos = float(points[0][1])
+        hmdet.zRotation = float(angles[0])
+        hmdet.radius = radius * surveyor.ratio_px_mm
+        return hmdet
