@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import numpy.testing as npt
 import pytest
@@ -7,9 +9,9 @@ import bb_convert_binaries.core as core
 
 
 @pytest.fixture
-def surveyor():
-    surv = st_core.Surveyor()
-    surv.load('./data/in/minimal_frame_container/surveyor_param.csv')
+def surveyor(main_indir):
+    surv = st_core.Surveyor(main_indir)
+    surv.load(os.path.join(main_indir, 'minimal_frame_container/surveyor_param.csv'))
     return surv
 
 
