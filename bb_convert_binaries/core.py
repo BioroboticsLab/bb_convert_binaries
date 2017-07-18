@@ -22,10 +22,40 @@ class BBB_Converter(object):
 
         self.old_sh = capnp.load(path_old_scheme)
         self.new_sh = capnp.load(path_new_scheme)
+        self.surveyor = None
 
     def load_surveyor(self, surveyor):
         self.surveyor = surveyor
 
-    @staticmethod
-    def _fill_hive_mapped_detection(xpos, ypos, zRotation, radius):
-        pass
+    def create_hive_mapping_data(self, cam_id):
+        assert self.surveyor is not None
+
+        params = self.surveyor.get_parameters()
+        assert cam_id in [params.cam_id_left, params.cam_id_right]
+
+        hmdata = self.new_sh.HiveMappingData.new_message()
+
+        hmdata.init('transformationMatrix', 9)
+        hmdata.init('frameSize', 2)
+        hmdata.init('origin', 2)
+        hmdata.origin = params.origin.tolist()
+        hmdata.ratioPxMm = params.ratio_px_mm
+
+        if cam_id == params.cam_id_left:
+
+            hmdata.transformationMatrix = params.homo_left.flatten().tolist()
+
+            for i in range(2):
+                hmdata.frameSize[i] = params.size_left[i]
+
+            hmdata.mapsToCamId = params.cam_id_right
+
+        else:
+            hmdata.transformationMatrix = params.homo_right.flatten().tolist()
+
+            for i in range(2):
+                hmdata.frameSize[i] = params.size_right[i]
+
+            hmdata.mapsToCamId = params.cam_id_left
+
+        return hmdata

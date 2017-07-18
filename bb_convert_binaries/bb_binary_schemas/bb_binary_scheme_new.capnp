@@ -87,7 +87,7 @@ struct DataSource {
 }
 
 struct HiveMappingData {
-  transformationMatrix @0 :List(Float32);
+  transformationMatrix @0 :List(Float64);
                                     # the transformation matrix to map the detections data to the
                                     # stitched panorama. These coordinates are also in image
                                     # coordinates. The HiveMappedDetections are calculate in
