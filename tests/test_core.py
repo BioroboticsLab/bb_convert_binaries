@@ -18,7 +18,6 @@ def surveyor(main_indir):
 @pytest.fixture
 def bbb_converter(surveyor):
     bbb_conv = core.BBB_Converter()
-    bbb_conv.load_surveyor(surveyor)
     return bbb_conv
 
 
@@ -26,9 +25,9 @@ def test_BBB_Converter(bbb_converter):
     pass
 
 
-def test_create_hive_mapping_data(bbb_converter):
-    hmdata_left = bbb_converter.create_hive_mapping_data(0)
-    hmdata_right = bbb_converter.create_hive_mapping_data(1)
+def test_create_hive_mapping_data(bbb_converter, surveyor):
+    hmdata_left = bbb_converter.create_hive_mapping_data(surveyor, 0)
+    hmdata_right = bbb_converter.create_hive_mapping_data(surveyor, 1)
     trans_matrix_left = [-0.0022398620155595797, 1.0255456751031058, 8.959450838408086,
                          -1.026839997252013, 0.009969281322362003, 4167.007420646516,
                          -4.401974722996176e-06, 3.3667549012775908e-06, 1.0176034969172618]

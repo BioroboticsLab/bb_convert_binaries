@@ -22,15 +22,11 @@ class BBB_Converter(object):
 
         self.old_sh = capnp.load(path_old_scheme)
         self.new_sh = capnp.load(path_new_scheme)
-        self.surveyor = None
 
-    def load_surveyor(self, surveyor):
-        self.surveyor = surveyor
+    def create_hive_mapping_data(self, surveyor, cam_id):
+        assert surveyor is not None
 
-    def create_hive_mapping_data(self, cam_id):
-        assert self.surveyor is not None
-
-        params = self.surveyor.get_parameters()
+        params = surveyor.get_parameters()
         assert cam_id in [params.cam_id_left, params.cam_id_right]
 
         hmdata = self.new_sh.HiveMappingData.new_message()
