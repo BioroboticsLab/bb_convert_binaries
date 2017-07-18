@@ -24,7 +24,7 @@ def test_BBB_Converter(bbb_converter):
     pass
 
 
-def test_create_hive_mapping_data(bbb_converter, surveyor):
+def test_create_hive_mapping_data(bbb_converter):
     hmdata_left = bbb_converter.create_hive_mapping_data(0)
     hmdata_right = bbb_converter.create_hive_mapping_data(1)
     trans_matrix_left = [-0.0022398620155595797, 1.0255456751031058, 8.959450838408086,
