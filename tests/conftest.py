@@ -1,7 +1,10 @@
 import os
 import os.path
 
+import capnp
 import pytest
+
+import bb_convert_binaries.helpers as helpers
 
 
 # add marker for incremental testing
@@ -36,3 +39,29 @@ def main_outdir():
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     return out_path
+
+
+def min_df(main_indir, path_bbb):
+    capnp.remove_import_hook()
+    path_old_scheme = helpers.get_default_path_old_scheme()
+    old_sh = capnp.load(path_old_scheme)
+    path = os.path.join(main_indir, path_bbb)
+    with open(path, 'rb') as old_bbb:
+        old_fc = old_sh.FrameContainer.read(old_bbb)
+    return old_fc
+
+
+@pytest.fixture
+def min_df_cam_0(main_indir):
+    path = os.path.join(main_indir,
+                        'minimal_frame_container/bb_binaries/'
+                        'Cam_0_2016-07-31T00:01:38.159691Z--2016-07-31T00:07:18.006892Z_min.bbb')
+    return min_df(main_indir, path)
+
+
+@pytest.fixture
+def min_df_cam_1(main_indir):
+    path = os.path.join(main_indir,
+                        'minimal_frame_container/bb_binaries/'
+                        'Cam_1_2016-07-31T00:02:08.738354Z--2016-07-31T00:07:48.569969Z.bbb')
+    return min_df(main_indir, path)

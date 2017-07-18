@@ -52,6 +52,49 @@ def test_create_hive_mapping_data(bbb_converter, surveyor):
     assert hmdata_right.mapsToCamId == 0
 
 
-def test_create_hive_mapped_detection(bbb_converter, surveyor):
-    hmdet = bbb_converter.create_hive_mapped_detection(surveyor, 10, 10, 1, 10, 0)
-    print(hmdet)
+def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
+    hive_mapped_detections_cam_0 = []
+    for f, frame in enumerate(min_df_cam_0.frames):
+        for d, det in enumerate(frame.detectionsUnion.detectionsDP):
+            hmdet = bbb_converter.create_hive_mapped_detection(
+                surveyor, det.xpos, det.ypos, det.zRotation, det.radius, 0)
+            hive_mapped_detections_cam_0.append(hmdet)
+
+    assert 52 < hive_mapped_detections_cam_0[0].xpos < 56
+    assert 100 < hive_mapped_detections_cam_0[0].ypos < 104
+    assert np.deg2rad(-(180-54)) < hive_mapped_detections_cam_0[0].zRotation < np.deg2rad(-(180-58))
+
+    assert 52 < hive_mapped_detections_cam_0[1].xpos < 56
+    assert 120 < hive_mapped_detections_cam_0[1].ypos < 124
+    assert np.deg2rad(- 64) < hive_mapped_detections_cam_0[1].zRotation < np.deg2rad(- 60)
+
+    assert 52 < hive_mapped_detections_cam_0[2].xpos < 56
+    assert 100 < hive_mapped_detections_cam_0[2].ypos < 104
+    assert np.deg2rad(-(180-54)) < hive_mapped_detections_cam_0[2].zRotation < np.deg2rad(-(180-58))
+
+    assert 52 < hive_mapped_detections_cam_0[3].xpos < 56
+    assert 120 < hive_mapped_detections_cam_0[3].ypos < 124
+    assert np.deg2rad(- 65) < hive_mapped_detections_cam_0[3].zRotation < np.deg2rad(- 60)
+
+    hive_mapped_detections_cam_1 = []
+    for f, frame in enumerate(min_df_cam_1.frames):
+        for d, det in enumerate(frame.detectionsUnion.detectionsDP):
+            hmdet = bbb_converter.create_hive_mapped_detection(
+                surveyor, det.xpos, det.ypos, det.zRotation, det.radius, 1)
+            hive_mapped_detections_cam_1.append(hmdet)
+
+    assert 312 < hive_mapped_detections_cam_1[0].xpos < 316
+    assert 194 < hive_mapped_detections_cam_1[0].ypos < 198
+    assert np.deg2rad(-(180-15)) < hive_mapped_detections_cam_1[0].zRotation < np.deg2rad(-(180-20))
+
+    assert 312 < hive_mapped_detections_cam_1[1].xpos < 316
+    assert 204 < hive_mapped_detections_cam_1[1].ypos < 208
+    assert np.deg2rad(- 37) < hive_mapped_detections_cam_1[1].zRotation < np.deg2rad(-34)
+
+    assert 312 < hive_mapped_detections_cam_1[2].xpos < 316
+    assert 200 < hive_mapped_detections_cam_1[2].ypos < 208
+    assert np.deg2rad(- 34) < hive_mapped_detections_cam_1[2].zRotation < np.deg2rad(-28)
+
+    assert 312 < hive_mapped_detections_cam_1[3].xpos < 316
+    assert 140 < hive_mapped_detections_cam_1[3].ypos < 144
+    assert np.deg2rad(180 - 58) < hive_mapped_detections_cam_1[3].zRotation < np.deg2rad(180 - 54)
