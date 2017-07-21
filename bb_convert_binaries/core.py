@@ -103,3 +103,44 @@ class BBB_Converter(object):
         hmdet.zRotation = float(angles[0])
         hmdet.radius = radius * surveyor.ratio_px_mm
         return hmdet
+
+    def create_detection_dp(self, old_dp, surveyor, cam_id):
+        """Allocate a DetectionDP struct for the new bb_binary_scheme.
+
+        This function copies the data from the 'old' detection to the 'new' detection and
+        extend it with the hive mapped data.
+
+        Args:
+            old_dp (capnp.lib.capnp._DynamicStructReader): the 'old' detection.
+            surveyor (Surveyor): Surveyor (bb_stitcher) with loaded parameters.
+            cam_id (int):
+
+        Returns: DetectionDP
+        """
+        new_dp = self.new_sh.DetectionDP.new_message()
+
+        new_dp.idx = old_dp.idx
+
+        new_dp.xpos = old_dp.xpos
+        new_dp.ypos = old_dp.ypos
+
+        new_dp.zRotation = old_dp.zRotation
+        new_dp.yRotation = old_dp.yRotation
+        new_dp.xRotation = old_dp.xRotation
+
+        new_dp.radius = old_dp.radius
+
+        new_dp.hiveMappedDetection = self.create_hive_mapped_detection(
+            surveyor, old_dp.xpos, old_dp.ypos, old_dp.zRotation, old_dp.radius, cam_id)
+
+        new_dp.localizerSaliency = old_dp.localizerSaliency
+
+        new_dp.init('decodedId', len(old_dp.decodedId))
+        for i, num in enumerate(old_dp.decodedId):
+            new_dp.decodedId[i] = num
+
+        new_dp.init('descriptor', len(old_dp.descriptor))
+        for i, num in enumerate(old_dp.descriptor):
+            new_dp.descriptor[i] = num
+
+        return new_dp

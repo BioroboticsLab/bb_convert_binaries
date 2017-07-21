@@ -1,3 +1,4 @@
+import difflib
 import os
 
 import numpy as np
@@ -98,3 +99,20 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
     assert 312 < hive_mapped_detections_cam_1[3].xpos < 316
     assert 140 < hive_mapped_detections_cam_1[3].ypos < 144
     assert np.deg2rad(180 - 58) < hive_mapped_detections_cam_1[3].zRotation < np.deg2rad(180 - 54)
+
+
+def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0):
+    for f, frame in enumerate(min_df_cam_0.frames):
+        for d, old_det in enumerate(frame.detectionsUnion.detectionsDP):
+            new_det = bbb_converter.create_detection_dp(old_det, surveyor, 0)
+
+            old_det_str = str(old_det).splitlines(keepends=True)
+            new_det_str = str(new_det).splitlines(keepends=True)
+            s = difflib.SequenceMatcher(None, old_det_str, new_det_str)
+
+            import sys
+            sys.stdout.writelines(difflib.unified_diff(old_det_str, new_det_str, n=0))
+
+            assert s.get_opcodes() == [('equal', 0, 3, 0, 3), ('delete', 3, 5, 3, 3),
+                                       ('equal', 5, 9, 3, 7), ('insert', 9, 9, 7, 12),
+                                       ('equal', 9, 12, 12, 15)]
