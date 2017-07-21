@@ -1,3 +1,15 @@
+#  Licensed under the Apache License, Version 2.0 (the "License"); you may
+#  not use this file except in compliance with the License. You may obtain
+#  a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+"""Module to convert the bbb-binaries from the BeesBook-Project to a new format."""
 import capnp
 import numpy as np
 
@@ -25,6 +37,18 @@ class BBB_Converter(object):
         self.new_sh = capnp.load(path_new_scheme)
 
     def create_hive_mapping_data(self, surveyor, cam_id):
+        """Allocate a HiveMappingData struct.
+
+        The HiveMappingData struct holds the parameters for mapping image
+        coordinates to world coordinates.
+
+        Args:
+            surveyor (Surveyor): Surveyor (bb_stitcher) with loaded parameters.
+            cam_id (int):
+
+        Returns: HiveMappingData
+
+        """
         assert surveyor is not None
 
         params = surveyor.get_parameters()
@@ -58,6 +82,18 @@ class BBB_Converter(object):
         return hmdata
 
     def create_hive_mapped_detection(self, surveyor, xpos, ypos, zRotation, radius, cam_id):
+        """Allocate a HiveMappedDetection struct from the new bb_binary_scheme.
+
+        Args:
+            surveyor (Surveyor): Surveyor (bb_stitcher) with loaded parameters.
+            xpos (float):
+            ypos (float):
+            zRotation (float):
+            radius (int):
+            cam_id (int):
+
+        Returns: HiveMappedDetection
+        """
         hmdet = self.new_sh.HiveMappedDetection.new_message()
         points, angles = surveyor.map_points_angles(
             np.float64([[xpos, ypos]]), np.array([zRotation]), cam_id
