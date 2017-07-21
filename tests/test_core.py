@@ -113,6 +113,8 @@ def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0):
             import sys
             sys.stdout.writelines(difflib.unified_diff(old_det_str, new_det_str, n=0))
 
+            # 'delete' -> yposHive, xposHive (old line 3-5)
+            # 'insert' -> HiveMappedDetection (new line 7-12)
             assert s.get_opcodes() == [('equal', 0, 3, 0, 3), ('delete', 3, 5, 3, 3),
                                        ('equal', 5, 9, 3, 7), ('insert', 9, 9, 7, 12),
                                        ('equal', 9, 12, 12, 15)]
