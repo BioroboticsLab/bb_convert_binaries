@@ -10,6 +10,14 @@ import bb_convert_binaries.core as core
 
 
 @pytest.fixture
+def outdir(main_outdir):
+    out_path = os.path.join(main_outdir, str(__name__))
+    if not os.path.exists(out_path):
+        os.makedirs(out_path)
+    return out_path
+
+
+@pytest.fixture
 def surveyor(main_indir):
     surv = st_core.Surveyor()
     surv.load(os.path.join(main_indir, 'minimal_frame_container/surveyor_param.csv'))
@@ -176,8 +184,11 @@ def test_create_frame(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
                                    ('equal', 27, 31, 33, 37)]
 
 
-def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
+def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1, outdir):
     new_fc = bbb_converter.create_frame_container(min_df_cam_0, surveyor)
+
+    with open(os.path.join(outdir, 'min_df_cam_0.bbb'), 'w+b') as new_bb:
+        new_fc.write(new_bb)
 
     old_fc_str = str(min_df_cam_0).splitlines(keepends=True)
     new_fc_str = str(new_fc).splitlines(keepends=True)
@@ -198,6 +209,9 @@ def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam
                                ('equal', 65, 71, 78, 84), ('replace', 71, 72, 84, 90)]
 
     new_fc = bbb_converter.create_frame_container(min_df_cam_1, surveyor)
+
+    with open(os.path.join(outdir, 'min_df_cam_1.bbb'), 'w+b') as new_bb:
+        new_fc.write(new_bb)
 
     old_fc_str = str(min_df_cam_1).splitlines(keepends=True)
     new_fc_str = str(new_fc).splitlines(keepends=True)
