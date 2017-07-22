@@ -180,3 +180,28 @@ class BBB_Converter(object):
             raise KeyError("Type {du} not supported.".format(du=du))
 
         return new_frame
+
+    def create_frameContainer(self, old_fc, surveyor):
+        new_fc = self.new_sh.FrameContainer.new_message()
+        new_fc.id = old_fc.id
+
+        ## DataSource
+        new_fc.init('dataSources', len(old_fc.dataSources))
+        for i, ds in enumerate(old_fc.dataSources):
+            new_fc.dataSources[i].idx = ds.idx
+            new_fc.dataSources[i].filename = ds.filename
+            new_fc.dataSources[i].videoPreviewFilename = ds.videoPreviewFilename
+
+        new_fc.fromTimestamp = old_fc.fromTimestamp
+        new_fc.toTimestamp = old_fc.toTimestamp
+
+        new_fc.init('frames', len(old_fc.frames))
+        for i, old_frame in enumerate(old_fc.frames):
+            new_fc.frames[i] = self.create_frame(old_frame, surveyor, old_fc.camId)
+
+        new_fc.camId = old_fc.camId
+        new_fc.hiveId = old_fc.hiveId
+
+        new_fc.hiveMappingData = self.create_hive_mapping_data(surveyor, old_fc.camId)
+
+        return new_fc

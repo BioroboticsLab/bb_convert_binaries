@@ -63,7 +63,8 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
 
     assert 52 < hive_mapped_detections_cam_0[0].xpos < 56
     assert 100 < hive_mapped_detections_cam_0[0].ypos < 104
-    assert np.deg2rad(-(180-54)) < hive_mapped_detections_cam_0[0].zRotation < np.deg2rad(-(180-58))
+    assert np.deg2rad(-(180 - 54)) < hive_mapped_detections_cam_0[0].zRotation < np.deg2rad(
+        -(180 - 58))
 
     assert 52 < hive_mapped_detections_cam_0[1].xpos < 56
     assert 120 < hive_mapped_detections_cam_0[1].ypos < 124
@@ -71,7 +72,8 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
 
     assert 52 < hive_mapped_detections_cam_0[2].xpos < 56
     assert 100 < hive_mapped_detections_cam_0[2].ypos < 104
-    assert np.deg2rad(-(180-54)) < hive_mapped_detections_cam_0[2].zRotation < np.deg2rad(-(180-58))
+    assert np.deg2rad(-(180 - 54)) < hive_mapped_detections_cam_0[2].zRotation < np.deg2rad(
+        -(180 - 58))
 
     assert 52 < hive_mapped_detections_cam_0[3].xpos < 56
     assert 120 < hive_mapped_detections_cam_0[3].ypos < 124
@@ -86,7 +88,8 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
 
     assert 312 < hive_mapped_detections_cam_1[0].xpos < 316
     assert 194 < hive_mapped_detections_cam_1[0].ypos < 198
-    assert np.deg2rad(-(180-15)) < hive_mapped_detections_cam_1[0].zRotation < np.deg2rad(-(180-20))
+    assert np.deg2rad(-(180 - 15)) < hive_mapped_detections_cam_1[0].zRotation < np.deg2rad(
+        -(180 - 20))
 
     assert 312 < hive_mapped_detections_cam_1[1].xpos < 316
     assert 204 < hive_mapped_detections_cam_1[1].ypos < 208
@@ -171,3 +174,45 @@ def test_create_frame(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
                                    ('equal', 15, 21, 18, 24), ('delete', 21, 23, 24, 24),
                                    ('equal', 23, 27, 24, 28), ('insert', 27, 27, 28, 33),
                                    ('equal', 27, 31, 33, 37)]
+
+
+def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
+    new_fc = bbb_converter.create_frameContainer(min_df_cam_0, surveyor)
+
+    old_fc_str = str(min_df_cam_0).splitlines(keepends=True)
+    new_fc_str = str(new_fc).splitlines(keepends=True)
+
+    # import sys
+    # sys.stdout.writelines(difflib.unified_diff(old_fc_str, new_fc_str, n=0))
+
+    s = difflib.SequenceMatcher(None, old_fc_str, new_fc_str)
+    assert s.get_opcodes() == [('equal', 0, 3, 0, 3), ('replace', 3, 4, 3, 5),
+                               ('equal', 4, 16, 5, 17), ('delete', 16, 18, 17, 17),
+                               ('equal', 18, 22, 17, 21), ('insert', 22, 22, 21, 26),
+                               ('equal', 22, 28, 26, 32), ('delete', 28, 30, 32, 32),
+                               ('equal', 30, 34, 32, 36), ('insert', 34, 34, 36, 41),
+                               ('equal', 34, 47, 41, 54), ('delete', 47, 49, 54, 54),
+                               ('equal', 49, 53, 54, 58), ('insert', 53, 53, 58, 63),
+                               ('equal', 53, 59, 63, 69), ('delete', 59, 61, 69, 69),
+                               ('equal', 61, 65, 69, 73), ('insert', 65, 65, 73, 78),
+                               ('equal', 65, 71, 78, 84), ('replace', 71, 72, 84, 90)]
+
+    new_fc = bbb_converter.create_frameContainer(min_df_cam_1, surveyor)
+
+    old_fc_str = str(min_df_cam_1).splitlines(keepends=True)
+    new_fc_str = str(new_fc).splitlines(keepends=True)
+
+    # import sys
+    # sys.stdout.writelines(difflib.unified_diff(old_fc_str, new_fc_str, n=0))
+
+    s = difflib.SequenceMatcher(None, old_fc_str, new_fc_str)
+    assert s.get_opcodes() == [('equal', 0, 3, 0, 3), ('replace', 3, 4, 3, 5),
+                               ('equal', 4, 16, 5, 17), ('delete', 16, 18, 17, 17),
+                               ('equal', 18, 22, 17, 21), ('insert', 22, 22, 21, 26),
+                               ('equal', 22, 28, 26, 32), ('delete', 28, 30, 32, 32),
+                               ('equal', 30, 34, 32, 36), ('insert', 34, 34, 36, 41),
+                               ('equal', 34, 47, 41, 54), ('delete', 47, 49, 54, 54),
+                               ('equal', 49, 53, 54, 58), ('insert', 53, 53, 58, 63),
+                               ('equal', 53, 59, 63, 69), ('delete', 59, 61, 69, 69),
+                               ('equal', 61, 65, 69, 73), ('insert', 65, 65, 73, 78),
+                               ('equal', 65, 71, 78, 84), ('replace', 71, 72, 84, 90)]
