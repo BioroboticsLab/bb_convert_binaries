@@ -177,7 +177,7 @@ def test_create_frame(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
 
 
 def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
-    new_fc = bbb_converter.create_frameContainer(min_df_cam_0, surveyor)
+    new_fc = bbb_converter.create_frame_container(min_df_cam_0, surveyor)
 
     old_fc_str = str(min_df_cam_0).splitlines(keepends=True)
     new_fc_str = str(new_fc).splitlines(keepends=True)
@@ -197,7 +197,7 @@ def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam
                                ('equal', 61, 65, 69, 73), ('insert', 65, 65, 73, 78),
                                ('equal', 65, 71, 78, 84), ('replace', 71, 72, 84, 90)]
 
-    new_fc = bbb_converter.create_frameContainer(min_df_cam_1, surveyor)
+    new_fc = bbb_converter.create_frame_container(min_df_cam_1, surveyor)
 
     old_fc_str = str(min_df_cam_1).splitlines(keepends=True)
     new_fc_str = str(new_fc).splitlines(keepends=True)

@@ -63,5 +63,5 @@ def min_df_cam_0(main_indir):
 def min_df_cam_1(main_indir):
     path = os.path.join(main_indir,
                         'minimal_frame_container/bb_binaries/'
-                        'Cam_1_2016-07-31T00:02:08.738354Z--2016-07-31T00:07:48.569969Z.bbb')
+                        'Cam_1_2016-07-31T00:02:08.738354Z--2016-07-31T00:07:48.569969Z_min.bbb')
     return min_df(main_indir, path)

@@ -181,11 +181,20 @@ class BBB_Converter(object):
 
         return new_frame
 
-    def create_frameContainer(self, old_fc, surveyor):
+    def create_frame_container(self, old_fc, surveyor):
+        """Allocate a FrameContainer struct for the new bb_binary_scheme.
+
+        Args:
+            old_fc (capnp.lib.capnp._DynamicStructReader): the 'old' FrameContainer.
+            surveyor (Surveyor): Surveyor (bb_stitcher) with loaded parameters.
+
+        Returns: FrameContainer
+
+        """
         new_fc = self.new_sh.FrameContainer.new_message()
         new_fc.id = old_fc.id
 
-        ## DataSource
+        # DataSource
         new_fc.init('dataSources', len(old_fc.dataSources))
         for i, ds in enumerate(old_fc.dataSources):
             new_fc.dataSources[i].idx = ds.idx
