@@ -101,7 +101,7 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
     assert np.deg2rad(180 - 58) < hive_mapped_detections_cam_1[3].zRotation < np.deg2rad(180 - 54)
 
 
-def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0):
+def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
     for f, frame in enumerate(min_df_cam_0.frames):
         for d, old_det in enumerate(frame.detectionsUnion.detectionsDP):
             new_det = bbb_converter.create_detection_dp(old_det, surveyor, 0)
@@ -119,3 +119,55 @@ def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0):
             assert s.get_opcodes() == [('equal', 0, 3, 0, 3), ('delete', 3, 5, 3, 3),
                                        ('equal', 5, 9, 3, 7), ('insert', 9, 9, 7, 12),
                                        ('equal', 9, 12, 12, 15)]
+
+    for f, frame in enumerate(min_df_cam_1.frames):
+        for d, old_det in enumerate(frame.detectionsUnion.detectionsDP):
+            new_det = bbb_converter.create_detection_dp(old_det, surveyor, 1)
+
+            old_det_str = str(old_det).splitlines(keepends=True)
+            new_det_str = str(new_det).splitlines(keepends=True)
+            s = difflib.SequenceMatcher(None, old_det_str, new_det_str)
+
+            # the next both lines are just for visualisation.
+            # import sys
+            # sys.stdout.writelines(difflib.unified_diff(old_det_str, new_det_str, n=0))
+
+            # 'delete' -> yposHive, xposHive (old line 3-5)
+            # 'insert' -> HiveMappedDetection (new line 7-12)
+            assert s.get_opcodes() == [('equal', 0, 3, 0, 3), ('delete', 3, 5, 3, 3),
+                                       ('equal', 5, 9, 3, 7), ('insert', 9, 9, 7, 12),
+                                       ('equal', 9, 12, 12, 15)]
+
+
+def test_create_frame(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
+    for f, old_frame in enumerate(min_df_cam_0.frames):
+        new_frame = bbb_converter.create_frame(old_frame, surveyor, 0)
+
+        old_frame_str = str(old_frame).splitlines(keepends=True)
+        new_frame_str = str(new_frame).splitlines(keepends=True)
+
+        # import sys
+        # sys.stdout.writelines(difflib.unified_diff(old_frame_str, new_frame_str, n=0))
+
+        s = difflib.SequenceMatcher(None, old_frame_str, new_frame_str)
+        assert s.get_opcodes() == [('equal', 0, 9, 0, 9), ('delete', 9, 11, 9, 9),
+                                   ('equal', 11, 15, 9, 13), ('insert', 15, 15, 13, 18),
+                                   ('equal', 15, 21, 18, 24), ('delete', 21, 23, 24, 24),
+                                   ('equal', 23, 27, 24, 28), ('insert', 27, 27, 28, 33),
+                                   ('equal', 27, 31, 33, 37)]
+
+    for f, old_frame in enumerate(min_df_cam_1.frames):
+        new_frame = bbb_converter.create_frame(old_frame, surveyor, 1)
+
+        old_frame_str = str(old_frame).splitlines(keepends=True)
+        new_frame_str = str(new_frame).splitlines(keepends=True)
+
+        # import sys
+        # sys.stdout.writelines(difflib.unified_diff(old_frame_str, new_frame_str, n=0))
+
+        s = difflib.SequenceMatcher(None, old_frame_str, new_frame_str)
+        assert s.get_opcodes() == [('equal', 0, 9, 0, 9), ('delete', 9, 11, 9, 9),
+                                   ('equal', 11, 15, 9, 13), ('insert', 15, 15, 13, 18),
+                                   ('equal', 15, 21, 18, 24), ('delete', 21, 23, 24, 24),
+                                   ('equal', 23, 27, 24, 28), ('insert', 27, 27, 28, 33),
+                                   ('equal', 27, 31, 33, 37)]

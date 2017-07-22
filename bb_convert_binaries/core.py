@@ -144,3 +144,39 @@ class BBB_Converter(object):
             new_dp.descriptor[i] = num
 
         return new_dp
+
+    def create_frame(self, old_frame, surveyor, cam_id):
+        """Allocate a Frame struct for the new bb_binary_scheme.
+
+        Args:
+            old_frame (capnp.lib.capnp._DynamicStructReader): the 'old' frame.
+            surveyor (Surveyor): Surveyor (bb_stitcher) with loaded parameters.
+            cam_id (int):
+
+        Returns: Frame
+        """
+        new_frame = self.new_sh.Frame.new_message()
+
+        new_frame.id = old_frame.id
+        new_frame.dataSourceIdx = old_frame.dataSourceIdx
+        new_frame.frameIdx = old_frame.frameIdx
+        new_frame.timestamp = old_frame.timestamp
+        new_frame.timedelta = old_frame.timedelta
+
+        du = old_frame.detectionsUnion.which()
+        if du == 'detectionsDP':
+            new_frame.detectionsUnion.init(
+                'detectionsDP', len(old_frame.detectionsUnion.detectionsDP)
+            )
+            for k, old_dp in enumerate(old_frame.detectionsUnion.detectionsDP):
+                new_frame.detectionsUnion.detectionsDP[k] = self.create_detection_dp(
+                    old_dp, surveyor, cam_id
+                )
+        elif du == 'detectionsCVP':
+            raise NotImplementedError()
+        elif du == 'detectionsTruth':
+            raise NotImplementedError()
+        else:
+            raise KeyError("Type {du} not supported.".format(du=du))
+
+        return new_frame
