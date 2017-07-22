@@ -35,8 +35,8 @@ def test_BBB_Converter(bbb_converter):
 
 
 def test_create_hive_mapping_data(bbb_converter, surveyor):
-    hmdata_left = bbb_converter.create_hive_mapping_data(surveyor, 0)
-    hmdata_right = bbb_converter.create_hive_mapping_data(surveyor, 1)
+    hmdata_left = bbb_converter._allocate_hive_mapping_data(surveyor, 0)
+    hmdata_right = bbb_converter._allocate_hive_mapping_data(surveyor, 1)
     trans_matrix_left = [-0.0022398620155595797, 1.0255456751031058, 8.959450838408086,
                          -1.026839997252013, 0.009969281322362003, 4167.007420646516,
                          -4.401974722996176e-06, 3.3667549012775908e-06, 1.0176034969172618]
@@ -65,7 +65,7 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
     hive_mapped_detections_cam_0 = []
     for f, frame in enumerate(min_df_cam_0.frames):
         for d, det in enumerate(frame.detectionsUnion.detectionsDP):
-            hmdet = bbb_converter.create_hive_mapped_detection(
+            hmdet = bbb_converter._allocate_hive_mapped_detection(
                 surveyor, det.xpos, det.ypos, det.zRotation, det.radius, 0)
             hive_mapped_detections_cam_0.append(hmdet)
 
@@ -90,7 +90,7 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
     hive_mapped_detections_cam_1 = []
     for f, frame in enumerate(min_df_cam_1.frames):
         for d, det in enumerate(frame.detectionsUnion.detectionsDP):
-            hmdet = bbb_converter.create_hive_mapped_detection(
+            hmdet = bbb_converter._allocate_hive_mapped_detection(
                 surveyor, det.xpos, det.ypos, det.zRotation, det.radius, 1)
             hive_mapped_detections_cam_1.append(hmdet)
 
@@ -115,7 +115,7 @@ def test_create_hive_mapped_detection(bbb_converter, surveyor, min_df_cam_0, min
 def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
     for f, frame in enumerate(min_df_cam_0.frames):
         for d, old_det in enumerate(frame.detectionsUnion.detectionsDP):
-            new_det = bbb_converter.create_detection_dp(old_det, surveyor, 0)
+            new_det = bbb_converter._allocate_detection_dp(old_det, surveyor, 0)
 
             old_det_str = str(old_det).splitlines(keepends=True)
             new_det_str = str(new_det).splitlines(keepends=True)
@@ -133,7 +133,7 @@ def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1
 
     for f, frame in enumerate(min_df_cam_1.frames):
         for d, old_det in enumerate(frame.detectionsUnion.detectionsDP):
-            new_det = bbb_converter.create_detection_dp(old_det, surveyor, 1)
+            new_det = bbb_converter._allocate_detection_dp(old_det, surveyor, 1)
 
             old_det_str = str(old_det).splitlines(keepends=True)
             new_det_str = str(new_det).splitlines(keepends=True)
@@ -152,7 +152,7 @@ def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1
 
 def test_create_frame(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
     for f, old_frame in enumerate(min_df_cam_0.frames):
-        new_frame = bbb_converter.create_frame(old_frame, surveyor, 0)
+        new_frame = bbb_converter._allocate_frame(old_frame, surveyor, 0)
 
         old_frame_str = str(old_frame).splitlines(keepends=True)
         new_frame_str = str(new_frame).splitlines(keepends=True)
@@ -168,7 +168,7 @@ def test_create_frame(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
                                    ('equal', 27, 31, 33, 37)]
 
     for f, old_frame in enumerate(min_df_cam_1.frames):
-        new_frame = bbb_converter.create_frame(old_frame, surveyor, 1)
+        new_frame = bbb_converter._allocate_frame(old_frame, surveyor, 1)
 
         old_frame_str = str(old_frame).splitlines(keepends=True)
         new_frame_str = str(new_frame).splitlines(keepends=True)
@@ -185,7 +185,7 @@ def test_create_frame(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1):
 
 
 def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam_1, outdir):
-    new_fc = bbb_converter.create_frame_container(min_df_cam_0, surveyor)
+    new_fc = bbb_converter._allocate_frame_container(min_df_cam_0, surveyor)
 
     with open(os.path.join(outdir, 'min_df_cam_0.bbb'), 'w+b') as new_bb:
         new_fc.write(new_bb)
@@ -208,7 +208,7 @@ def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam
                                ('equal', 61, 65, 69, 73), ('insert', 65, 65, 73, 78),
                                ('equal', 65, 71, 78, 84), ('replace', 71, 72, 84, 90)]
 
-    new_fc = bbb_converter.create_frame_container(min_df_cam_1, surveyor)
+    new_fc = bbb_converter._allocate_frame_container(min_df_cam_1, surveyor)
 
     with open(os.path.join(outdir, 'min_df_cam_1.bbb'), 'w+b') as new_bb:
         new_fc.write(new_bb)
@@ -230,3 +230,25 @@ def test_create_frameContainer(bbb_converter, surveyor, min_df_cam_0, min_df_cam
                                ('equal', 53, 59, 63, 69), ('delete', 59, 61, 69, 69),
                                ('equal', 61, 65, 69, 73), ('insert', 65, 65, 73, 78),
                                ('equal', 65, 71, 78, 84), ('replace', 71, 72, 84, 90)]
+
+
+def test_convert_bbb(bbb_converter, main_indir, outdir, surveyor):
+    input_path = os.path.join(main_indir,
+                              'minimal_frame_container/bb_binaries/'
+                              'Cam_0_2016-07-31T00:01:38.159691Z-'
+                              '-2016-07-31T00:07:18.006892Z_min.bbb')
+
+    output_path = os.path.join(outdir, 'min_df_cam_0_new.bbb')
+    bbb_converter.convert_bbb(input_path, output_path, surveyor)
+
+    assert os.path.exists(output_path)
+
+    input_path = os.path.join(main_indir,
+                              'minimal_frame_container/bb_binaries/'
+                              'Cam_1_2016-07-31T00:02:08.738354Z-'
+                              '-2016-07-31T00:07:48.569969Z_min.bbb')
+
+    output_path = os.path.join(outdir, 'min_df_cam_1_new.bbb')
+    bbb_converter.convert_bbb(input_path, output_path, surveyor)
+
+    assert os.path.exists(output_path)

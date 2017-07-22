@@ -36,7 +36,7 @@ class BBB_Converter(object):
         self.old_sh = capnp.load(path_old_scheme)
         self.new_sh = capnp.load(path_new_scheme)
 
-    def create_hive_mapping_data(self, surveyor, cam_id):
+    def _allocate_hive_mapping_data(self, surveyor, cam_id):
         """Allocate a HiveMappingData struct.
 
         The HiveMappingData struct holds the parameters for mapping image
@@ -81,7 +81,7 @@ class BBB_Converter(object):
 
         return hmdata
 
-    def create_hive_mapped_detection(self, surveyor, xpos, ypos, zRotation, radius, cam_id):
+    def _allocate_hive_mapped_detection(self, surveyor, xpos, ypos, zRotation, radius, cam_id):
         """Allocate a HiveMappedDetection struct from the new bb_binary_scheme.
 
         Args:
@@ -104,7 +104,7 @@ class BBB_Converter(object):
         hmdet.radius = radius * surveyor.ratio_px_mm
         return hmdet
 
-    def create_detection_dp(self, old_dp, surveyor, cam_id):
+    def _allocate_detection_dp(self, old_dp, surveyor, cam_id):
         """Allocate a DetectionDP struct for the new bb_binary_scheme.
 
         This function copies the data from the 'old' detection to the 'new' detection and
@@ -130,7 +130,7 @@ class BBB_Converter(object):
 
         new_dp.radius = old_dp.radius
 
-        new_dp.hiveMappedDetection = self.create_hive_mapped_detection(
+        new_dp.hiveMappedDetection = self._allocate_hive_mapped_detection(
             surveyor, old_dp.xpos, old_dp.ypos, old_dp.zRotation, old_dp.radius, cam_id)
 
         new_dp.localizerSaliency = old_dp.localizerSaliency
@@ -145,7 +145,7 @@ class BBB_Converter(object):
 
         return new_dp
 
-    def create_frame(self, old_frame, surveyor, cam_id):
+    def _allocate_frame(self, old_frame, surveyor, cam_id):
         """Allocate a Frame struct for the new bb_binary_scheme.
 
         Args:
@@ -169,7 +169,7 @@ class BBB_Converter(object):
                 'detectionsDP', len(old_frame.detectionsUnion.detectionsDP)
             )
             for k, old_dp in enumerate(old_frame.detectionsUnion.detectionsDP):
-                new_frame.detectionsUnion.detectionsDP[k] = self.create_detection_dp(
+                new_frame.detectionsUnion.detectionsDP[k] = self._allocate_detection_dp(
                     old_dp, surveyor, cam_id
                 )
         elif du == 'detectionsCVP':
@@ -181,7 +181,7 @@ class BBB_Converter(object):
 
         return new_frame
 
-    def create_frame_container(self, old_fc, surveyor):
+    def _allocate_frame_container(self, old_fc, surveyor):
         """Allocate a FrameContainer struct for the new bb_binary_scheme.
 
         Args:
@@ -206,11 +206,31 @@ class BBB_Converter(object):
 
         new_fc.init('frames', len(old_fc.frames))
         for i, old_frame in enumerate(old_fc.frames):
-            new_fc.frames[i] = self.create_frame(old_frame, surveyor, old_fc.camId)
+            new_fc.frames[i] = self._allocate_frame(old_frame, surveyor, old_fc.camId)
 
         new_fc.camId = old_fc.camId
         new_fc.hiveId = old_fc.hiveId
 
-        new_fc.hiveMappingData = self.create_hive_mapping_data(surveyor, old_fc.camId)
+        new_fc.hiveMappingData = self._allocate_hive_mapping_data(surveyor, old_fc.camId)
 
         return new_fc
+
+    def convert_bbb(self, input_path, output_path, surveyor):
+        """Convert bbb-binary to a new format and writes it to output_path.
+
+        Args:
+            input_path (str): path of the old bb_binary
+            output_path (str): path of the new bb_binary
+            surveyor (Surveyor): Surveyor (bb_stitcher) with loaded parameters.
+        """
+
+        # read old bbb binary
+        with open(input_path, 'rb') as old_bbb:
+            old_fc = self.old_sh.FrameContainer.read(old_bbb)
+
+        # convert
+        new_fc = self._allocate_frame_container(old_fc, surveyor)
+
+        # write new bbb binary
+        with open(output_path, 'w+b') as new_bb:
+            new_fc.write(new_bb)
