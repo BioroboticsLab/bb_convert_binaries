@@ -110,8 +110,9 @@ def test_create_detection_dp(bbb_converter, surveyor, min_df_cam_0):
             new_det_str = str(new_det).splitlines(keepends=True)
             s = difflib.SequenceMatcher(None, old_det_str, new_det_str)
 
-            import sys
-            sys.stdout.writelines(difflib.unified_diff(old_det_str, new_det_str, n=0))
+            # the next both lines are just for visualisation.
+            # import sys
+            # sys.stdout.writelines(difflib.unified_diff(old_det_str, new_det_str, n=0))
 
             # 'delete' -> yposHive, xposHive (old line 3-5)
             # 'insert' -> HiveMappedDetection (new line 7-12)
