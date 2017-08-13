@@ -223,7 +223,6 @@ class BBB_Converter(object):
             output_path (str): path of the new bb_binary
             surveyor (Surveyor): Surveyor (bb_stitcher) with loaded parameters.
         """
-
         # read old bbb binary
         with open(input_path, 'rb') as old_bbb:
             old_fc = self.old_sh.FrameContainer.read(old_bbb)
