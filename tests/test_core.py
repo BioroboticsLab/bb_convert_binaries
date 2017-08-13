@@ -252,3 +252,12 @@ def test_convert_bbb(bbb_converter, main_indir, outdir, surveyor):
     bbb_converter.convert_bbb(input_path, output_path, surveyor)
 
     assert os.path.exists(output_path)
+
+
+def test_convert_real_bbb(bbb_converter, main_indir, outdir, surveyor):
+    input_path = os.path.join(main_indir,
+                              'archiv/Cam_0_2016-07-31T00:01:38.159691Z-'
+                              '-2016-07-31T00:07:18.006892Z.bbb')
+    output_path = os.path.join(outdir, 'Cam_0_2016-07-31T00:01:38.159691Z-'
+                                       '-2016-07-31T00:07:18.006892Z_new.bbb')
+    bbb_converter.convert_bbb(input_path, output_path, surveyor)
