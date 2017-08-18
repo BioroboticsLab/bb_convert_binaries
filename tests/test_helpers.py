@@ -20,3 +20,14 @@ def test_replace_root_dir():
     res_path = '/this/is/the/new/root/dir/2016/08/01/09/20/' \
                'Cam_0_2016-08-01T09:24:28.524594Z--2016-08-01T09:30:08.371296Z.bbb'
     assert new_path == res_path
+
+
+def test_create_dirs(tmpdir):
+    file = '2016/08/01/09/20/Cam_0_2016-08-01T09:24:28.524594Z--2016-08-01T09:30:08.371296Z.bbb'
+    path = os.path.join(str(tmpdir), file)
+
+    helpers.create_dirs(path)
+    path_dir = os.path.join(str(tmpdir), '2016/08/01/09/20/')
+    assert os.path.exists(path_dir)
+
+    helpers.create_dirs(path)

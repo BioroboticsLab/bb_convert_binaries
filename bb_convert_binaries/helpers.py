@@ -39,3 +39,14 @@ def replace_root_dir(old_root_dir, new_root_dir, old_file_path):
     """
     rel_file_path = old_file_path[len(old_root_dir) + 1:]
     return os.path.join(new_root_dir, rel_file_path)
+
+
+def create_dirs(path):
+    """Create recursive directory structure of file path.
+
+    Args:
+        path(str): Potential file path.
+    """
+    dir_path = os.path.dirname(path)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
