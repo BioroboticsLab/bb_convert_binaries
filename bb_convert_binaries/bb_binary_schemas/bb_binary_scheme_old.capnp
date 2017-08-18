@@ -1,4 +1,8 @@
-@0xa7d4a096084cee0e;
+# this is not the original unique id of the capnp proto file,
+# but otherwise we're getting an Duplicate ID error if we want to import
+# the package bb_binary with the old scheme.
+@0xce18d399671e5d97;
+# @0xa7d4a096084cee0e; this is the original unique ID.
 
 using Java = import "java.capnp";
 $Java.package("de.fuberlin.biorobotics");
