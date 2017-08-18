@@ -5,6 +5,8 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+import bb_binary.repository as bbb_r
+import bb_binary.parsing as bbb_p
 import bb_stitcher.core as st_core
 import bb_convert_binaries.core as core
 
@@ -28,6 +30,11 @@ def surveyor(main_indir):
 def bbb_converter(surveyor):
     bbb_conv = core.BBB_Converter()
     return bbb_conv
+
+
+@pytest.fixture
+def bbb_repro(main_indir):
+    return bbb_r.Repository(os.path.join(main_indir, 'minimal_repro'))
 
 
 def test_BBB_Converter(bbb_converter):
@@ -261,3 +268,31 @@ def test_convert_real_bbb(bbb_converter, main_indir, outdir, surveyor):
     output_path = os.path.join(outdir, 'Cam_0_2016-07-31T00:01:38.159691Z-'
                                        '-2016-07-31T00:07:18.006892Z_new.bbb')
     bbb_converter.convert_bbb(input_path, output_path, surveyor)
+
+
+def test_convert_bbb_interval(bbb_repro, bbb_converter, surveyor, outdir):
+    cam_id, start_time, __ = bbb_p.parse_fname(
+        'Cam_0_2016-07-31T00:12:58.517719Z--2016-07-31T00:18:38.365432Z.bbb')
+    cam_id, __, end_time = bbb_p.parse_fname(
+        'Cam_0_2016-07-31T00:47:03.581364Z--2016-07-31T00:52:43.428659Z.bbb')
+    output_path = os.path.join(outdir, 'mapped_minimal_repro')
+    bbb_converter.convert_bbb_interval(start_time, end_time, bbb_repro,
+                                       cam_id, surveyor, output_path)
+
+    res_files = {
+        'Cam_0_2016-07-31T00:12:58.517719Z--2016-07-31T00:18:38.365432Z.bbb',
+        'Cam_0_2016-07-31T00:18:38.698795Z--2016-07-31T00:24:18.544859Z.bbb',
+        'Cam_0_2016-07-31T00:24:18.878530Z--2016-07-31T00:29:58.723272Z.bbb',
+        'Cam_0_2016-07-31T00:29:59.056947Z--2016-07-31T00:35:38.902497Z.bbb',
+        'Cam_0_2016-07-31T00:35:39.235117Z--2016-07-31T00:41:23.068690Z.bbb',
+        'Cam_0_2016-07-31T00:35:39.235117Z--2016-07-31T00:41:23.068690Z.bbb',
+        'Cam_0_2016-07-31T00:41:23.402031Z--2016-07-31T00:47:03.248099Z.bbb',
+        'Cam_0_2016-07-31T00:47:03.581364Z--2016-07-31T00:52:43.428659Z.bbb'
+    }
+
+    created_files = set()
+    for root, dirs, files in os.walk(output_path):
+        for file in files:
+            created_files.add(file)
+
+    assert created_files == res_files

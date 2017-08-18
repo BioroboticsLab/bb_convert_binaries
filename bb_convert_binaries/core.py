@@ -233,3 +233,24 @@ class BBB_Converter(object):
         # write new bbb binary
         with open(output_path, 'w+b') as new_bb:
             new_fc.write(new_bb)
+
+    def convert_bbb_interval(self, start_time, end_time, repro, cam_id, surveyor, new_root_dir):
+        """Convert all bbb-binaries between start_time and end_time.
+
+        Args:
+            start_time (datetime):
+            end_time (datetime):
+            repro (Repository):
+            cam_id (int):
+            surveyor (Surveyor):
+            new_root_dir (str):
+
+        Returns:
+
+        """
+        # TODO(gitmrigut): better docs.
+        iterator = repro.iter_fnames(begin=start_time, end=end_time, cam=cam_id)
+        for input_path in iterator:
+            output_path = helpers.replace_root_dir(repro.root_dir, new_root_dir, input_path)
+            helpers.create_dirs(output_path)
+            self.convert_bbb(input_path, output_path, surveyor)
