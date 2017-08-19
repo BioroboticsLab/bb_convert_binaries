@@ -10,10 +10,14 @@
 #  License for the specific language governing permissions and limitations
 #  under the License.
 """Module to convert the bbb-binaries from the BeesBook-Project to a new format."""
+from logging import getLogger
+
 import capnp
 import numpy as np
 
 import bb_convert_binaries.helpers as helpers
+
+log = getLogger(__name__)
 
 
 class BBB_Converter(object):
@@ -251,6 +255,8 @@ class BBB_Converter(object):
         # TODO(gitmrigut): better docs.
         iterator = repro.iter_fnames(begin=start_time, end=end_time, cam=cam_id)
         for input_path in iterator:
+            log.info('Start converting: {input_path}'.format(input_path=input_path))
             output_path = helpers.replace_root_dir(repro.root_dir, new_root_dir, input_path)
             helpers.create_dirs(output_path)
             self.convert_bbb(input_path, output_path, surveyor)
+            log.info('Success: {output_path}'.format(output_path=output_path))

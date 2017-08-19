@@ -271,6 +271,9 @@ def test_convert_real_bbb(bbb_converter, main_indir, outdir, surveyor):
 
 
 def test_convert_bbb_interval(bbb_repro, bbb_converter, surveyor, outdir):
+    import logging.config
+    logging.config.fileConfig('logging.ini')
+
     cam_id, start_time, __ = bbb_p.parse_fname(
         'Cam_0_2016-07-31T00:12:58.517719Z--2016-07-31T00:18:38.365432Z.bbb')
     cam_id, __, end_time = bbb_p.parse_fname(
