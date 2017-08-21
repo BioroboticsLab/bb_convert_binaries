@@ -33,8 +33,8 @@ def bbb_converter(surveyor):
 
 
 @pytest.fixture
-def bbb_repro(main_indir):
-    return bbb_r.Repository(os.path.join(main_indir, 'minimal_repro'))
+def bbb_repo(main_indir):
+    return bbb_r.Repository(os.path.join(main_indir, 'minimal_repo'))
 
 
 def test_BBB_Converter(bbb_converter):
@@ -270,7 +270,7 @@ def test_convert_real_bbb(bbb_converter, main_indir, outdir, surveyor):
     bbb_converter.convert_bbb(input_path, output_path, surveyor)
 
 
-def test_convert_bbb_interval(bbb_repro, bbb_converter, surveyor, outdir, logging_ini_path):
+def test_convert_bbb_interval(bbb_repo, bbb_converter, surveyor, outdir, logging_ini_path):
     import logging.config
     logging.config.fileConfig(logging_ini_path)
 
@@ -278,8 +278,8 @@ def test_convert_bbb_interval(bbb_repro, bbb_converter, surveyor, outdir, loggin
         'Cam_0_2016-07-31T00:12:58.517719Z--2016-07-31T00:18:38.365432Z.bbb')
     cam_id, __, end_time = bbb_p.parse_fname(
         'Cam_0_2016-07-31T00:47:03.581364Z--2016-07-31T00:52:43.428659Z.bbb')
-    output_path = os.path.join(outdir, 'mapped_minimal_repro')
-    bbb_converter.convert_bbb_interval(start_time, end_time, bbb_repro,
+    output_path = os.path.join(outdir, 'mapped_minimal_repo')
+    bbb_converter.convert_bbb_interval(start_time, end_time, bbb_repo,
                                        cam_id, surveyor, output_path)
 
     res_files = {
