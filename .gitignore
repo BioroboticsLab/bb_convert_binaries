@@ -100,3 +100,7 @@ ENV/
 # mypy
 .mypy_cache/
 /tests/data/in/archiv/
+
+#files
+/tests/data/out/
+/scratches/
