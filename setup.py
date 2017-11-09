@@ -11,7 +11,7 @@ setup(
     version='0.0.0.dev1',
     description='This package is used to convert the bb_binary data.',
     long_description='',
-    url='https://github.com/gitmirgut/bb_convert_binaries',
+    url='https://github.com/BioroboticsLab/bb_convert_binaries',
     install_requires=reqs,
     dependency_links=dep_links,
     author='gitmirgut',
