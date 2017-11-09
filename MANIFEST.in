@@ -1,0 +1,1 @@
+include bb_convert_binaries/bb_binary_schemas/*.capnp

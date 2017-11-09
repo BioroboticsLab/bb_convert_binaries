@@ -17,6 +17,7 @@ setup(
     author='gitmirgut',
     author_email="gitmirgut@users.noreply.github.com",
     packages=['bb_convert_binaries'],
+    package_data={'bb_convert_binaries': ['bb_binary_schemas/*.capnp']},
     license='Apache License 2.0',
     classifiers=[
         'Development Status :: 3 - Alpha',
